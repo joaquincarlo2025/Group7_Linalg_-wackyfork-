@@ -8,61 +8,75 @@ function generateInputs() {
     return;
   }
 
-  const basisContainer = document.getElementById("basisContainer");
-  const imageContainer = document.getElementById("imageContainer");
+  //updates container for the two grids
+  updateVectorContainer("basisContainer", n, n, "b", "basis");
+  updateVectorContainer("imageContainer", n, m, "T(b", "image");
 
-  basisContainer.innerHTML = "";
-  imageContainer.innerHTML = "";
+  //handles the animations
+  function updateVectorContainer(containerId, vectorCount, coordsPerVector, labelPrefix, inputClass) {
+    const container = document.getElementById(containerId);
+    const currentVectors = container.querySelectorAll('.vector');
 
-  // Basis vectors b1, b2, ..., bn (each in R^n)
-  for (let i = 0; i < n; i++) {
-    const vector = document.createElement("div");
-    vector.className = "vector";
-
-    const label = document.createElement("label");
-    label.textContent = `b${i + 1}`;
-    vector.appendChild(label);
-
-    for (let j = 0; j < n; j++) {
-        const input = document.createElement("input");
-        input.type = "text";
-        input.inputMode = "numeric";
-        input.pattern = "-?[0-9]*";
-        input.className = "basis";
-
-        forceNumericInput(input);   // ← ADD THIS LINE
-
-        vector.appendChild(input);
+    //remove vectors for fields (decreased on spinbar)
+    if (currentVectors.length > vectorCount) {
+      for (let i = currentVectors.length - 1; i >= vectorCount; i--) {
+        const v = currentVectors[i];
+        v.classList.remove('show');
+        v.addEventListener('transitionend', () => v.remove(), { once: true }); 
+      }
     }
 
-    basisContainer.appendChild(vector);
-  }
+    //add new vectors for fields (increased on spinbar)
+    if (currentVectors.length < vectorCount) {
+      for (let i = currentVectors.length; i < vectorCount; i++) {
+        const vectorDiv = document.createElement("div");
+        vectorDiv.className = "vector";
 
-  // Image vectors T(b1), T(b2), ..., T(bn) (each in R^m)
-  for (let i = 0; i < n; i++) {
-    const vector = document.createElement("div");
-    vector.className = "vector";
+        const label = document.createElement("label");
+        label.textContent = labelPrefix.includes("T") ? `${labelPrefix}${i + 1})` : `${labelPrefix}${i + 1}`;
+        vectorDiv.appendChild(label);
 
-    const label = document.createElement("label");
-    label.textContent = `T(b${i + 1})`;
-    vector.appendChild(label);
+        //vector placement
+        for (let j = 0; j < coordsPerVector; j++) {
+          const input = createAnimatedInput(inputClass);
+          vectorDiv.appendChild(input);
+        }
 
-    for (let j = 0; j < m; j++) {
-        const input = document.createElement("input");
-        input.type = "text";
-        input.inputMode = "numeric";
-        input.pattern = "-?[0-9]*";
-        input.className = "image";
+        container.appendChild(vectorDiv);
 
-        forceNumericInput(input);   // ← ADD THIS LINE
-
-        vector.appendChild(input);
+        //show animation
+        requestAnimationFrame(() => {
+          vectorDiv.classList.add('show');
+        });
+      }
     }
 
-    imageContainer.appendChild(vector);
+    currentVectors.forEach((v) => {
+      const inputs = v.querySelectorAll('input');
+      if (inputs.length < coordsPerVector) {
+        //vector placement returns
+        for (let k = inputs.length; k < coordsPerVector; k++) {
+          v.appendChild(createAnimatedInput(inputClass))
+        }
+      } else if (inputs.length > coordsPerVector) {
+        //vector placement 3: the reckoning
+        for (let k = inputs.length - 1; k >= coordsPerVector; k--) {
+          inputs[k].remove();
+        }
+      }
+    });
   }
-}
 
+  function createAnimatedInput(className) {
+    const input = document.createElement("input");
+    input.type = "text";
+    input.inputMode = "numeric";
+    input.pattern = "-?[0-9]*";
+    input.className = className;
+    forceNumericInput(input);
+    return input;
+  }
+  
 function computeStandardMatrix() {
   const n = parseInt(document.getElementById("nInput").value);
   const m = parseInt(document.getElementById("mInput").value);
