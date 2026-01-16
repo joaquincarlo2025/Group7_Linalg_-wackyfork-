@@ -2,7 +2,7 @@ function generateInputs() {
   const nInput = document.getElementById("nInput");
   const mInput =document.getElementById("mInput")
   
-  if (!nINput || !mInput) return;
+  if (!nInput || !mInput) return;
   
   const n = parseInt(nInput.value);
   const m = parseInt(mInput.value);
