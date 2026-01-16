@@ -20,20 +20,20 @@ function generateInputs() {
 
 function updateVectorContainer(containerId, vectorCount, coordsPerVector, labelPrefix, inputClass) {
   const container = document.getElementById(containerId);
-  const currentVectors = container.querySelectorAll('.vector');
+  const originalVectors = container.querySelectorAll('.vector');
 
   //vector removal
-  if (currentVectors.length > vectorCount) {
-    for (let i = currentVectors.length - 1; i >= vectorCount; i--) {
-      const v = currentVectors[i];
+  if (originalVectors.length > vectorCount) {
+    for (let i = originalVectors.length - 1; i >= vectorCount; i--) {
+      const v = originalVectors[i];
       v.classList.remove('show');
       v.addEventListener('transitionend', () => v.remove(), { once: true });
     }
   }
 
   //new vector placement
-  if (currentVectors.length < vectorCount) {
-    for (let i = currentVectors.length; i < vectorCount; i++) {
+  if (originalVectors.length < vectorCount) {
+    for (let i = originalVectors.length; i < vectorCount; i++) {
       const vectorDiv = document.createElement("div");
       vectorDiv.className = "vector";
 
@@ -47,14 +47,17 @@ function updateVectorContainer(containerId, vectorCount, coordsPerVector, labelP
 
       container.appendChild(vectorDiv);
 
-      //trigger animation
       requestAnimationFrame(() => {
-        vectorDiv.classList.add('show');
+        requestAnimationFrame(() => {
+		  vectorDiv.classList.add('show');
+		});
       });
     }
   }
 
-  container.querySelectorAll('.vector').forEach((v) => {
+  originalVectors.forEach((v, index) => {
+	if (index >= vectorCount) return;
+	
     const inputs = v.querySelectorAll('input');
     if (inputs.length < coordsPerVector) {
       for (let k = inputs.length; k < coordsPerVector; k++) {
@@ -239,8 +242,8 @@ function parseNumber(value) {
   return Number(value);
 }
 
+
 document.getElementById("nInput").addEventListener("input", generateInputs);
 document.getElementById("mInput").addEventListener("input", generateInputs);
-
 
 generateInputs();
