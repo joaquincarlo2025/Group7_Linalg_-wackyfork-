@@ -1,7 +1,13 @@
 function generateInputs() {
-  const n = parseInt(document.getElementById("nInput").value);
-  const m = parseInt(document.getElementById("mInput").value);
+  const nInput = document.getElementById("nInput");
+  const mInput =document.getElementById("mInput")
+  
+  if (!nINput || !mInput) return;
+  
+  const n = parseInt(nInput.value);
+  const m = parseInt(mInput.value);
 
+  
   if (!Number.isInteger(n) || !Number.isInteger(m) || n <= 0 || m <= 0) {
     document.getElementById("basisContainer").innerHTML = "";
     document.getElementById("imageContainer").innerHTML = "";
@@ -11,7 +17,7 @@ function generateInputs() {
   //updates container for the two grids
   updateVectorContainer("basisContainer", n, n, "b", "basis");
   updateVectorContainer("imageContainer", n, m, "T(b", "image");
-
+}
   //handles the animations
   function updateVectorContainer(containerId, vectorCount, coordsPerVector, labelPrefix, inputClass) {
     const container = document.getElementById(containerId);
@@ -51,7 +57,7 @@ function generateInputs() {
       }
     }
 
-    currentVectors.forEach((v) => {
+    container.querySelectorAll('.vector').forEach((v) => {
       const inputs = v.querySelectorAll('input');
       if (inputs.length < coordsPerVector) {
         //vector placement returns
