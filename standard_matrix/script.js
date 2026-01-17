@@ -101,6 +101,18 @@ function createAnimatedInput(className) {
   	return input;
 }
 
+function appendStep(parent, titleText, matrix) {
+    const stepDiv = document.createElement("div");
+    stepDiv.className = "step";
+    
+    const h3 = document.createElement("h3");
+    h3.textContent = titleText;
+    
+    stepDiv.appendChild(h3);
+    stepDiv.appendChild(renderMatrix(matrix));
+    parent.appendChild(stepDiv);
+}
+
 function computeStandardMatrix() {
   	const n = parseInt(document.getElementById("nInput").value);
   	const m = parseInt(document.getElementById("mInput").value);
@@ -142,16 +154,13 @@ function computeStandardMatrix() {
     	const A = multiplyMatrices(C, B_inv);
 
     	output.innerHTML = `<h2>Standard Matrix A</h2>`;
-    	output.appendChild(renderMatrix(A));
+		output.appendChild(renderMatrix(A));
 
-    	steps.innerHTML = `<div class="step"><h3>Step 1: Basis Matrix B</h3></div>`;
-    	steps.appendChild(renderMatrix(B));
-    	steps.innerHTML += `<div class="step"><h3>Step 2: Inverse B⁻¹</h3></div>`;
-    	steps.appendChild(renderMatrix(B_inv));
-    	steps.innerHTML += `<div class="step"><h3>Step 3: Image Matrix C</h3></div>`;
-    	steps.appendChild(renderMatrix(C));
-    	steps.innerHTML += `<div class="step"><h3>Step 4: Compute A = C · B⁻¹</h3></div>`;
-    	steps.appendChild(renderMatrix(A));
+		steps.innerHTML = "";
+		appendStep(steps, "Step 1: Basis Matrix B", B);
+		appendStep(steps, "Step 2: Inverse B⁻¹", B_inv);
+		appendStep(steps, "Step 3: Image Matrix C", C);
+		appendStep(steps, "Step 4: Compute A = C · B⁻¹", A);
 
   	} catch (err) {
     	output.textContent = "Error: " + err.message;
@@ -211,7 +220,7 @@ function renderMatrix(matrix) {
 
 function toggleSteps() {
   	const steps = document.getElementById("steps");
-  	steps.style.display = steps.style.display === "none" ? "block" : "none";
+  	steps.style.display = steps.style.display === "none" ? "flex" : "none";
 }
 
 function resetInputs() {
