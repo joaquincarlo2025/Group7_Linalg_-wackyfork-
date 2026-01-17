@@ -146,6 +146,22 @@ button:hover {
     padding: 6px;
 }
 
+.dimensions label sup, .vector label, .vector input, .matrix-cell, input[type="number"] {
+    font-family: "Cambria Math", "Times New Roman", Times, STIXGeneral, serif;
+    font-size: 1.05em;
+}
+
+/* Specifically target the R in dimension labels without affecting "dimension of" */
+.dimensions label {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; /* Original font */
+}
+
+/* Ensure the superscript n and m still get the math font */
+.dimensions label sup {
+    font-family: "Cambria Math", "Times New Roman", Times, STIXGeneral, serif;
+    font-size: 0.8em;
+}
+
 .step {
     margin-top: 10px;
     margin-bottom: 20px;
@@ -177,3 +193,4 @@ button:hover {
 .controls button:hover {
     background-color: #EE544A;
 }
+
